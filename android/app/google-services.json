@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "629417919476",
+    "firebase_url": "https://tfg-alvarojuancastro-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "tfg-alvarojuancastro",
+    "storage_bucket": "tfg-alvarojuancastro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629417919476:android:7e3ab8382ec6a5a5e7afa1",
+        "android_client_info": {
+          "package_name": "com.example.tfg_proyect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629417919476-77eh110ejpsruml6lld34a366d11o1ra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVGUUUdnGPOg_AKLdXY-5yDKdyE47wpDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629417919476-77eh110ejpsruml6lld34a366d11o1ra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

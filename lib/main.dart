@@ -1,9 +1,21 @@
+// @dart=2.9
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:tfg_proyect/pages/PaginaEstadisticas.dart';
-import 'package:tfg_proyect/pages/PaginaHome.dart';
-import 'package:tfg_proyect/pages/PaginaVacuna.dart';
+import 'package:provider/provider.dart';
+import 'package:tfg_proyect/auth/AuthenticationWrapper.dart';
+import 'package:tfg_proyect/pages/PaginaMapa.dart';
+import 'package:tfg_proyect/provider/event_provider.dart';
+import 'package:tfg_proyect/provider/location_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'auth/Authentication_service.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox<int>('steps');
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -14,49 +26,34 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _paginaActual = 0;
-
-  List<Widget> _paginas = [
-    PaginaEstadisticas(),
-    PaginaHome(),
-    PaginaVacuna(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'TFG proyect',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('TFG proyect'),
-          backgroundColor: Colors.teal[400],
+    return MultiProvider(
+      providers: [
+        Provider<AuthenticationService>(
+          create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.supervised_user_circle),
-          backgroundColor: Colors.teal[200],
-          onPressed: () {},
+        StreamProvider(
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
+          initialData: null,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        body: _paginas[_paginaActual],
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: (index) {
-            setState(() {
-              _paginaActual = index;
-            });
-          },
-          currentIndex: _paginaActual,
-          selectedItemColor: Colors.teal[400],
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.analytics), label: "Estadísticas"),
-            // Icon(Icons.assessment)
-            BottomNavigationBarItem(icon: Icon(Icons.pets), label: "Home"),
-            // location_on_rounded
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today), label: "Vacuna"),
-            // medical_services_outlined
-          ],
+        ChangeNotifierProvider(
+          create: (context) => LocationProvider(),
+          child: PaginaMapa(),
+        ),
+      ],
+      child: ChangeNotifierProvider(
+        create: (context) => EventProvider(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'TFG proyect',
+          themeMode: ThemeMode.dark,
+          darkTheme: ThemeData.light().copyWith(
+            colorScheme:
+                ColorScheme.fromSwatch().copyWith(secondary: Colors.teal[300]),
+          ),
+          home: AuthenticationWrapper(),
         ),
       ),
     );
